@@ -1,0 +1,261 @@
+
+
+* {
+    margin:0 ; 
+    padding : 0 ;
+    box-sizing: border-box;
+}
+
+
+body {
+    
+    font-family:Arial, Helvetica, sans-serif ;
+    background-color:#F7F7F7;
+    overflow : hidden; 
+}
+
+.top-bar {
+    position:fixed;
+    display:flex;
+    top: 1.5rem;             
+    left: 1.5rem;            
+    right: 1.5rem;
+    justify-content: space-between;
+    z-index: 10 ; 
+
+
+    
+
+}
+
+.top-left , .top-right {
+    display:flex;
+    gap: 1rem;
+    
+}
+
+.top-right {
+background-color: #cbe4e4;
+padding : 0.5rem 1rem;
+border-radius: 0.5rem;
+box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.top-left{
+    display: flex;
+align-items: center;
+justify-content: center;
+padding : 0.5rem 1rem;
+
+
+}
+
+.top-right button {
+    border-radius: 0.25rem;
+background: rgba(255, 255, 255, 0.90);
+box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25);
+border:none; 
+cursor: pointer;
+padding: 0.5rem ;
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: background-color 0.2s, color 0.2s;
+}
+
+.top-left button{
+    background-color: transparent; 
+    border: none ; 
+    cursor: pointer;
+padding: 0.5rem ;
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: background-color 0.2s, transform 0.1s;
+
+
+
+
+}
+.top-left button:hover , .top-right button:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+.top-left button:active {
+  transform: translateY(0);
+  color: rgb(55, 53, 59);
+}
+
+ .top-right button:active {
+  transform: translateY(0);
+  background-color: rgb(171, 136, 242);
+ 
+}
+
+.canvas-board {
+    position: absolute;
+    top: 0rem;             
+left: 0rem;            
+    width : 100vw ; 
+    height : 100vh;
+    z-index: 1; 
+
+}
+
+#drawing-board {
+    cursor : crosshair;
+    width: 100% ;
+    height: 100% ;
+    display : block;
+}
+
+.bottom-bar {
+    position: fixed;
+    display: flex;
+    bottom: 1.5rem;             
+    left: 1.5rem;            
+    right: 1.5rem;
+    justify-content: center;
+    z-index: 10 ; 
+    
+}
+
+#toolbar {
+    /* border:5px solid blue; */
+    display: flex;
+    border-radius: 0.5rem  ;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    gap: 4rem ; 
+background: #e8eded;
+box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+}
+
+.shape-grp, .brush-grp, #text-grp {
+    position: relative; 
+    display: flex;
+}
+
+.shape-popupmenu, .brush-popup, .text-popup {
+    
+
+    position: absolute;
+    bottom: 4rem;
+    /* border:5px solid blue; */
+    /* display:flex; */
+    flex-direction: column ;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    gap : 0.25rem;
+    background: #FFF;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    left: 50%;
+    display: none;
+
+transform: translateX(-50%);
+
+
+}
+
+.shape-popupmenu button , .text-popup button {
+    width:100% ; 
+    justify-content: flex-start;
+    padding: 0.5rem 1rem;
+    gap: 0.75rem;
+
+
+
+
+}
+.brush-popup input {
+     
+    border:none;
+
+
+}
+.brush-popup input[type="number"] {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background: #f0f0f0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
+.brush-popup select {
+    
+    border-radius: 0.25rem;
+    
+}
+
+
+
+
+
+
+#toolbar button {
+    
+border-radius: 0.25rem;
+background: #FFF;
+box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25);
+border:none; 
+cursor: pointer;
+padding: 0.5rem ;
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: background-color 0.2s, color 0.2s;
+
+}
+
+#toolbar button:hover {
+  background: #d1d4d4;
+  transform: translateY(-1px);
+}
+
+#toolbar button:active {
+  transform: translateY(0);
+  background-color:  rgb(171, 136, 242);
+
+}
+
+
+
+.show-popup {
+    display: flex !important; 
+}
+
+
+
+
+
+
+.cursor-grab {
+    cursor: grab !important;
+}
+
+.selected-tool {
+    background-color: rgb(171, 136, 242) !important;
+}
+
+body.dark-theme {
+    background-color: #1e1e24;
+    color: #ffffff;
+     
+}
+
+
+#drawing-board {
+    background-color: #ffffff;
+}
+
+
+body.dark-theme #drawing-board {
+    background-color: #1e1e24; 
+}
