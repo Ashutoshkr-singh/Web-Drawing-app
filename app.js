@@ -340,6 +340,44 @@ const drawTriangle = (e) => {
     ctx.closePath();
     ctx.stroke();
 }
+const drawArrow = (e) => {
+    ctx.beginPath();
+    ctx.moveTo(prevMouseX, prevMouseY); 
+    ctx.lineTo(e.offsetX, e.offsetY);
+    const headlen = 15;
+   const angle = Math.atan2(e.offsetY - prevMouseY, e.offsetX - prevMouseX);
+
+    ctx.lineTo(e.offsetX - headlen * Math.cos(angle - Math.PI / 6), e.offsetY - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(e.offsetX, e.offsetY);
+
+
+
+    ctx.lineTo(e.offsetX - headlen * Math.cos(angle + Math.PI / 6), e.offsetY - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
+}
+
+
+const drawStar = (e) => {
+    let rot = Math.PI / 2 * 3;
+    let x = prevMouseX;
+    let y = prevMouseY;
+    let step = Math.PI / 5;
+    
+    let outerRadius = Math.sqrt(Math.pow((prevMouseX - e.offsetX), 2) + Math.pow((prevMouseY - e.offsetY), 2));
+    let innerRadius = outerRadius / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y - outerRadius);
+    for (let i = 0; i < 5; i++) {
+        ctx.lineTo(x + Math.cos(rot) * outerRadius, y + Math.sin(rot) * outerRadius);
+        rot += step;
+        ctx.lineTo(x + Math.cos(rot) * innerRadius, y + Math.sin(rot) * innerRadius);
+        rot += step;
+    }
+    ctx.lineTo(x, y - outerRadius);
+    ctx.closePath();
+    ctx.stroke();
+}
 
 
 const addText = (e) => 
@@ -524,8 +562,19 @@ if  ( selectedTool ==="brush" || selectedTool === "pencil" || selectedTool === "
         ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
     }
+    else if (selectedTool === "arrow") { 
+        drawArrow(e);
+
+    } 
+    
+else if (selectedTool === "star") { 
+        drawStar(e);
 }
 
+
+
+
+    }
 
 const stopDraw = () => 
     {
@@ -545,11 +594,3 @@ const stopDraw = () =>
     canvasground.addEventListener('mousedown', startDraw);
               canvasground.addEventListener('mousemove', drawing);
 canvasground.addEventListener('mouseup', stopDraw);
-
-
-
-
-
-
-
-
