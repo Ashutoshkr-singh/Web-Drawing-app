@@ -6,8 +6,7 @@ const redobutton = document.getElementById('redo-btn');
 
 
 //for theme change
-const sunbutton = document.getElementById('light-m');
-const moonbutton = document.getElementById('dark-m');
+const themeBtn = document.getElementById('theme-toggle');
 
 //for canvas 
 const canvasground = document.getElementById('drawing-board');
@@ -52,21 +51,15 @@ sizeNumber.addEventListener('input', () => sizeSlider.value = sizeNumber.value);
 
 //theme change feature 
 
-sunbutton.addEventListener('click', () => 
-    {document.body.classList.remove('dark-theme');
-        sunbutton.classList.add('selected-tool');
-    moonbutton.classList.remove('selected-tool');
+themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle( 'dark-theme');
+    const icon = themeBtn.querySelector('i');
+    if (document.body.classList.contains('dark-theme')) {
+        icon.className = 'ph ph-sun';
+    } else {
+        icon.className = 'ph ph-moon';
+    }               
 });
-
-
-
-moonbutton.addEventListener('click', () => 
-    {document.body.classList.add('dark-theme');
-
-        moonbutton.classList.add('selected-tool');
-sunbutton.classList.remove('selected-tool');
-});
-
 
 
 
@@ -223,6 +216,9 @@ const ctx = canvasground.getContext('2d');
 window.addEventListener('load', () => {
     canvasground.width = canvasground.offsetWidth;
     canvasground.height = canvasground.offsetHeight; 
+
+
+
 });
 
 let isDrawing = false;
