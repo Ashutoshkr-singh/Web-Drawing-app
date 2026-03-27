@@ -227,6 +227,11 @@ let prevMouseX, prevMouseY;
 let snapshot;
 let undoArray = [];
 let historyIndex = -1;
+let isPanning = false;
+let panX = 0, panY = 0;
+let startPanX = 0, startPanY = 0;
+
+
 
 const restoreCanvas = (dataurl) => {
     const img = new Image();
@@ -334,9 +339,9 @@ let radius = Math.sqrt(Math.pow((prevMouseX - e.offsetX), 2) + Math.pow((prevMou
 
 const drawTriangle = (e) => {
     ctx.beginPath();
-    ctx.moveTo(prevMouseX, prevMouseY); // Start point (top)
-    ctx.lineTo(e.offsetX, e.offsetY);   // Bottom right point
-    ctx.lineTo(prevMouseX * 2 - e.offsetX, e.offsetY); // Bottom left point
+    ctx.moveTo(prevMouseX, prevMouseY); 
+    ctx.lineTo(e.offsetX, e.offsetY);   
+    ctx.lineTo(prevMouseX * 2 - e.offsetX, e.offsetY); 
     ctx.closePath();
     ctx.stroke();
 }
@@ -467,8 +472,17 @@ saveState();
 
 //start drawing 
 
-const startDraw = (e) => 
-    {if (handtool.classList.contains('selected-tool')) return;
+const startDraw = (e) => {
+    if (handtool.classList.contains('selected-tool')) {
+        isPanning = true;
+        startPanX = e.clientX - panX;
+        startPanY = e.clientY - panY;
+        canvasground.style.cursor = "grabbing";
+
+        return; 
+    }
+
+
 
 
 if (selectedTool === "text") {
@@ -538,6 +552,23 @@ if (brushStyle.value === "dashed") {
 const drawing = (e) => 
     
     {
+
+
+        if (isPanning) {
+        panX = e.clientX - startPanX;
+        panY = e.clientY - startPanY;
+        
+        canvasground.style.transform = `translate(${panX}px, ${panY}px)`;
+        return;
+    }
+
+
+
+
+
+
+
+
     if (!isDrawing) return;
 
 
@@ -578,10 +609,19 @@ else if (selectedTool === "star") {
 
 const stopDraw = () => 
     {
+if (isPanning) {
+        isPanning = false;
+        canvasground.style.cursor = "grab";
+        return;
+    }
+
+
         if (isDrawing) {
     isDrawing = false;
     saveState();
         }
+
+
 
 
     if (handtool.classList.contains('selected-tool')) {
