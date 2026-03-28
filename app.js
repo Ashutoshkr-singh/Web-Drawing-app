@@ -553,7 +553,7 @@ else if (selectedTool === "pencil") {
         ctx.lineJoin = "round";
         ctx.setLineDash([]);        
     } 
-    else {
+    else  if (selectedTool === "brush") {
         
         ctx.lineWidth = sizeSlider.value;
 
@@ -571,6 +571,13 @@ if (brushStyle.value === "dashed") {
         
         ctx.setLineDash([]);
     }
+    }
+
+    else {
+        ctx.lineWidth = sizeSlider.value;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+         ctx.setLineDash([]);
     }
     snapshot = ctx.getImageData(0, 0, canvasground.width, canvasground.height);
 }
