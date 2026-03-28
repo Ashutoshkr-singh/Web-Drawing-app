@@ -1,4 +1,5 @@
 
+
 //for undo and redo
 
 const undobutton = document.getElementById('undo-btn');
@@ -43,8 +44,16 @@ const brushStyle = document.getElementById('brush-styles');
 
 
 // Sync the slider and number box together
-sizeSlider.addEventListener('input', () => sizeNumber.value = sizeSlider.value);
-sizeNumber.addEventListener('input', () => sizeSlider.value = sizeNumber.value);
+sizeSlider.addEventListener('input', () => {
+    sizeNumber.value = sizeSlider.value;
+updateErasercursor()    ;
+}); 
+
+
+sizeNumber.addEventListener('input', () => { sizeSlider.value = sizeNumber.value; 
+updateErasercursor()    ;
+});
+
 
 
 
@@ -178,7 +187,8 @@ eraserbutton.addEventListener('click', () => {
 
     closeallMenus();
 
-    canvasground.style.cursor = "crosshair";
+    updateErasercursor()    ;
+
 
     console.log("Eraser tool selected!");
 
@@ -230,6 +240,20 @@ let historyIndex = -1;
 let isPanning = false;
 let panX = 0, panY = 0;
 let startPanX = 0, startPanY = 0;
+
+
+
+const updateErasercursor = () => {
+    if (selectedTool === "eraser") {
+        const size = sizeSlider.value;
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${size/2 - 1}" fill="none" stroke="#a0a0a0" stroke-width="1.5"/></svg>`;
+        const cursorUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+        
+        canvasground.style.cursor = `url('${cursorUrl}') ${size/2} ${size/2}, crosshair`;
+        
+    }
+}
+
 
 
 
@@ -497,7 +521,10 @@ if (selectedTool === "image") {
 
 
     isDrawing = true;
-    canvasground.style.cursor = "crosshair";
+    if (selectedTool !== "eraser") {
+canvasground.style.cursor = "crosshair";
+
+    }
     prevMouseX = e.offsetX;
     prevMouseY = e.offsetY;
 
@@ -626,9 +653,16 @@ if (isPanning) {
 
     if (handtool.classList.contains('selected-tool')) {
         canvasground.style.cursor = "grab";
-    } else {
+
+    } else  if (selectedTool === "eraser") {
+        updateErasercursor()    ;
+
+    }
+
+    else {
         canvasground.style.cursor = "crosshair";
     }
+
     }
 
     canvasground.addEventListener('mousedown', startDraw);
