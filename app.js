@@ -6,8 +6,7 @@ const redobutton = document.getElementById('redo-btn');
 
 
 //for theme change
-const sunbutton = document.getElementById('light-m');
-const moonbutton = document.getElementById('dark-m');
+const themeBtn = document.getElementById('theme-toggle');
 
 //for canvas 
 const canvasground = document.getElementById('drawing-board');
@@ -52,21 +51,15 @@ sizeNumber.addEventListener('input', () => sizeSlider.value = sizeNumber.value);
 
 //theme change feature 
 
-sunbutton.addEventListener('click', () => 
-    {document.body.classList.remove('dark-theme');
-        sunbutton.classList.add('selected-tool');
-    moonbutton.classList.remove('selected-tool');
+themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle( 'dark-theme');
+    const icon = themeBtn.querySelector('i');
+    if (document.body.classList.contains('dark-theme')) {
+        icon.className = 'ph ph-sun';
+    } else {
+        icon.className = 'ph ph-moon';
+    }               
 });
-
-
-
-moonbutton.addEventListener('click', () => 
-    {document.body.classList.add('dark-theme');
-
-        moonbutton.classList.add('selected-tool');
-sunbutton.classList.remove('selected-tool');
-});
-
 
 
 
@@ -223,6 +216,9 @@ const ctx = canvasground.getContext('2d');
 window.addEventListener('load', () => {
     canvasground.width = canvasground.offsetWidth;
     canvasground.height = canvasground.offsetHeight; 
+
+
+
 });
 
 let isDrawing = false;
@@ -231,6 +227,11 @@ let prevMouseX, prevMouseY;
 let snapshot;
 let undoArray = [];
 let historyIndex = -1;
+let isPanning = false;
+let panX = 0, panY = 0;
+let startPanX = 0, startPanY = 0;
+
+
 
 const restoreCanvas = (dataurl) => {
     const img = new Image();
@@ -338,9 +339,47 @@ let radius = Math.sqrt(Math.pow((prevMouseX - e.offsetX), 2) + Math.pow((prevMou
 
 const drawTriangle = (e) => {
     ctx.beginPath();
-    ctx.moveTo(prevMouseX, prevMouseY); // Start point (top)
-    ctx.lineTo(e.offsetX, e.offsetY);   // Bottom right point
-    ctx.lineTo(prevMouseX * 2 - e.offsetX, e.offsetY); // Bottom left point
+    ctx.moveTo(prevMouseX, prevMouseY); 
+    ctx.lineTo(e.offsetX, e.offsetY);   
+    ctx.lineTo(prevMouseX * 2 - e.offsetX, e.offsetY); 
+    ctx.closePath();
+    ctx.stroke();
+}
+const drawArrow = (e) => {
+    ctx.beginPath();
+    ctx.moveTo(prevMouseX, prevMouseY); 
+    ctx.lineTo(e.offsetX, e.offsetY);
+    const headlen = 15;
+   const angle = Math.atan2(e.offsetY - prevMouseY, e.offsetX - prevMouseX);
+
+    ctx.lineTo(e.offsetX - headlen * Math.cos(angle - Math.PI / 6), e.offsetY - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(e.offsetX, e.offsetY);
+
+
+
+    ctx.lineTo(e.offsetX - headlen * Math.cos(angle + Math.PI / 6), e.offsetY - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
+}
+
+
+const drawStar = (e) => {
+    let rot = Math.PI / 2 * 3;
+    let x = prevMouseX;
+    let y = prevMouseY;
+    let step = Math.PI / 5;
+    
+    let outerRadius = Math.sqrt(Math.pow((prevMouseX - e.offsetX), 2) + Math.pow((prevMouseY - e.offsetY), 2));
+    let innerRadius = outerRadius / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y - outerRadius);
+    for (let i = 0; i < 5; i++) {
+        ctx.lineTo(x + Math.cos(rot) * outerRadius, y + Math.sin(rot) * outerRadius);
+        rot += step;
+        ctx.lineTo(x + Math.cos(rot) * innerRadius, y + Math.sin(rot) * innerRadius);
+        rot += step;
+    }
+    ctx.lineTo(x, y - outerRadius);
     ctx.closePath();
     ctx.stroke();
 }
@@ -433,8 +472,17 @@ saveState();
 
 //start drawing 
 
-const startDraw = (e) => 
-    {if (handtool.classList.contains('selected-tool')) return;
+const startDraw = (e) => {
+    if (handtool.classList.contains('selected-tool')) {
+        isPanning = true;
+        startPanX = e.clientX - panX;
+        startPanY = e.clientY - panY;
+        canvasground.style.cursor = "grabbing";
+
+        return; 
+    }
+
+
 
 
 if (selectedTool === "text") {
@@ -504,6 +552,23 @@ if (brushStyle.value === "dashed") {
 const drawing = (e) => 
     
     {
+
+
+        if (isPanning) {
+        panX = e.clientX - startPanX;
+        panY = e.clientY - startPanY;
+        
+        canvasground.style.transform = `translate(${panX}px, ${panY}px)`;
+        return;
+    }
+
+
+
+
+
+
+
+
     if (!isDrawing) return;
 
 
@@ -528,15 +593,35 @@ if  ( selectedTool ==="brush" || selectedTool === "pencil" || selectedTool === "
         ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
     }
+    else if (selectedTool === "arrow") { 
+        drawArrow(e);
+
+    } 
+    
+else if (selectedTool === "star") { 
+        drawStar(e);
 }
 
 
+
+
+    }
+
 const stopDraw = () => 
     {
+if (isPanning) {
+        isPanning = false;
+        canvasground.style.cursor = "grab";
+        return;
+    }
+
+
         if (isDrawing) {
     isDrawing = false;
     saveState();
         }
+
+
 
 
     if (handtool.classList.contains('selected-tool')) {
@@ -549,11 +634,3 @@ const stopDraw = () =>
     canvasground.addEventListener('mousedown', startDraw);
               canvasground.addEventListener('mousemove', drawing);
 canvasground.addEventListener('mouseup', stopDraw);
-
-
-
-
-
-
-
-
