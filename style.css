@@ -164,7 +164,7 @@ transform: translateX(-50%);
 
 }
 
-.shape-popupmenu button , .text-popup button {
+.shape-popupmenu button , .text-popup button ,  .brush-popup button {
     width:100% ; 
     justify-content: flex-start;
     padding: 0.5rem 1rem;
@@ -253,6 +253,7 @@ body.dark-theme {
 
 #drawing-board {
     background-color: #ffffff;
+    touch-action: none; 
 }
 
 
@@ -262,6 +263,46 @@ body.dark-theme #drawing-board {
 
 
 
+
+ /*media queries are here   */
+
+@media (max-width: 600px) {
+    #toolbar {
+        gap:1rem;
+        padding: 0.5rem 1rem;
+        width: 100vw ; 
+        
+
+    }
+
+
+    .bottom-bar {
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: 1rem;
+        
+
+    }
+
+.shape-popupmenu , .brush-popup{
+    left : 0 ; 
+    transform :none ; 
+
+}
+
+.text-popup {
+    left:auto ; 
+    right : 0 ; 
+    transform :none ; 
+}
+
+#typing-box {
+    max-width : 80vw ; 
+    
+}
+
+
+}
 
 
 
@@ -283,6 +324,7 @@ body.dark-theme .text-popup {
 body.dark-theme #toolbar button,
 body.dark-theme .shape-popupmenu button, 
 body.dark-theme .text-popup button,
+body.dark-theme .brush-popup button,
 body.dark-theme .top-right button {
     background-color: #3b3b4f;
     color: #ffffff;
@@ -292,9 +334,11 @@ body.dark-theme .top-right button {
 body.dark-theme #toolbar button:hover,
 body.dark-theme .shape-popupmenu button:hover, 
 body.dark-theme .text-popup button:hover,
+body.dark-theme .brush-popup button:hover,
 body.dark-theme .top-right button:hover {
     background-color: #4c4c66;
 }
+
 
 
 body.dark-theme .top-left button {

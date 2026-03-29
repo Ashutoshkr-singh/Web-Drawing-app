@@ -27,9 +27,11 @@ const brushbutton = document.getElementById('brush');
 const brushmenu = document.querySelector('.brush-popup');
 
 const textbutton = document.getElementById('text');
-const textmenu = document.querySelector('.text-popup');
 
-const allmenus = [shapesmenu, brushmenu, textmenu];
+
+const allmenus = [shapesmenu, brushmenu];
+
+
 
 //for image and eraser tool
 const eraserbutton = document.getElementById('eraser');
@@ -72,20 +74,7 @@ themeBtn.addEventListener('click', () => {
 
 
 
-//undo and redo feature
 
-undobutton.addEventListener('click', () => {
- if (historyIndex > 0) {
-        historyIndex--;
-        restoreCanvas(undoArray[historyIndex]);
-    }
-});
-
-redobutton.addEventListener('click', () => {
-    if (historyIndex < undoArray.length - 1) {   historyIndex++;
-    restoreCanvas(undoArray[historyIndex]);
-    }
-});
 
 
 //closing the menu
@@ -158,20 +147,19 @@ if (!isOpen) {
 
 
 textbutton.addEventListener('click', () => {alltools.forEach(tool => tool.classList.remove('selected-tool'));
+    textbutton.classList.add('selected-tool');
+
 
 
     selectedTool = "text";
     canvasground.style.cursor = "text";
 
 
-    textbutton.classList.add('selected-tool');  
-    const isOpen = textmenu.classList.contains('show-popup');
+    
 
     closeallMenus();
 
-    if (!isOpen) {
-        textmenu.classList.add('show-popup');
-    }
+    
 });
 
 
@@ -223,13 +211,7 @@ imagebutton.addEventListener('click', () => {
 
 const ctx = canvasground.getContext('2d');
 
-window.addEventListener('load', () => {
-    canvasground.width = canvasground.offsetWidth;
-    canvasground.height = canvasground.offsetHeight; 
 
-
-
-});
 
 let isDrawing = false;
 let selectedTool = "circle";
@@ -452,44 +434,46 @@ saveState();
         }
     });
 }
-const textSubTools = document.querySelectorAll('.text-popup .sub-brush');
+const drawingSubTools = document.querySelectorAll('.brush-popup .sub-brush');
 
-textSubTools.forEach(btn => {
+drawingSubTools.forEach(btn => {
     btn.addEventListener('click', (e) => {
-        
         selectedTool = e.currentTarget.innerText.trim().toLowerCase();
-        
-        console.log("Writing tool changed to: " + selectedTool);
+        console.log("Drawing tool changed to: " + selectedTool);
         canvasground.style.cursor = "crosshair"; 
         closeallMenus();
     });
 });
 
-const stampRandomImage = (e) => {
+
+
+
+
+
+const stampRandomImage = async (e) => { 
+    
     
     const randomImageUrl = `https://picsum.photos/300/300?random=${Math.random()}`;
     console.log("Fetching new random image from: " + randomImageUrl);
     
-    
-    const imgObj = new Image();
-    imgObj.crossOrigin = "anonymous";
-    
-    
-    imgObj.onload = () => {
+    try {
+        const response = await fetch(randomImageUrl); 
+        const blob = await response.blob();
+        const safeUrl = URL.createObjectURL(blob);
+        const imgObj = new Image();
         
-        const size = imgObj.width;
-        ctx.globalCompositeOperation = "source-over";
-        ctx.drawImage(imgObj, e.offsetX - size / 2, e.offsetY - size / 2, size, size);
-
-saveState();
-
-        console.log("Image stamped on canvas!");
-    };
-    
-    
-    imgObj.src = randomImageUrl;
+        imgObj.onload = () => {
+            const size = imgObj.width;
+            ctx.globalCompositeOperation = "source-over";
+            ctx.drawImage(imgObj, e.offsetX - size / 2, e.offsetY - size / 2, size, size);
+            saveState();
+            URL.revokeObjectURL(safeUrl);
+        }; 
+        imgObj.src = safeUrl;
+    } catch (error) {
+        console.error("image failed to load", error);
+    }
 }
-
 
 
 
@@ -497,7 +481,13 @@ saveState();
 //start drawing 
 
 const startDraw = (e) => {
+  
+
+canvasground.setPointerCapture(e.pointerId);
+
     if (handtool.classList.contains('selected-tool')) {
+        
+        
         isPanning = true;
         startPanX = e.clientX - panX;
         startPanY = e.clientY - panY;
@@ -505,6 +495,8 @@ const startDraw = (e) => {
 
         return; 
     }
+
+    
 
 
 
@@ -641,9 +633,17 @@ else if (selectedTool === "star") {
 
     }
 
-const stopDraw = () => 
+const stopDraw = (e) => 
     {
-if (isPanning) {
+
+
+
+
+    if (e && e.pointerId) {
+        canvasground.releasePointerCapture(e.pointerId);
+    }
+    if (isPanning) {
+
         isPanning = false;
         canvasground.style.cursor = "grab";
         return;
@@ -672,6 +672,11 @@ if (isPanning) {
 
     }
 
-    canvasground.addEventListener('mousedown', startDraw);
-              canvasground.addEventListener('mousemove', drawing);
-canvasground.addEventListener('mouseup', stopDraw);
+    canvasground.addEventListener('pointerdown', startDraw);
+              canvasground.addEventListener('pointermove', drawing);
+canvasground.addEventListener('pointerup', stopDraw);
+
+
+
+
+
