@@ -477,7 +477,13 @@ const stampRandomImage = async (e) => {
 //start drawing 
 
 const startDraw = (e) => {
+  
+
+canvasground.setPointerCapture(e.pointerId);
+
     if (handtool.classList.contains('selected-tool')) {
+        
+        
         isPanning = true;
         startPanX = e.clientX - panX;
         startPanY = e.clientY - panY;
@@ -485,6 +491,8 @@ const startDraw = (e) => {
 
         return; 
     }
+
+    
 
 
 
@@ -621,9 +629,17 @@ else if (selectedTool === "star") {
 
     }
 
-const stopDraw = () => 
+const stopDraw = (e) => 
     {
-if (isPanning) {
+
+
+
+
+    if (e && e.pointerId) {
+        canvasground.releasePointerCapture(e.pointerId);
+    }
+    if (isPanning) {
+
         isPanning = false;
         canvasground.style.cursor = "grab";
         return;
@@ -656,7 +672,7 @@ if (isPanning) {
               canvasground.addEventListener('pointermove', drawing);
 canvasground.addEventListener('pointerup', stopDraw);
 
-canvasground.addEventListener('pointerout', stopDraw);
+
 
 
 
