@@ -253,6 +253,7 @@ body.dark-theme {
 
 #drawing-board {
     background-color: #ffffff;
+    touch-action: none; 
 }
 
 
@@ -262,6 +263,46 @@ body.dark-theme #drawing-board {
 
 
 
+
+ /*media queries are here   */
+
+@media (max-width: 600px) {
+    #toolbar {
+        gap:1rem;
+        padding: 0.5rem 1rem;
+        width: 100vw ; 
+        
+
+    }
+
+
+    .bottom-bar {
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: 1rem;
+        
+
+    }
+
+.shape-popupmenu , .brush-popup{
+    left : 0 ; 
+    transform :none ; 
+
+}
+
+.text-popup {
+    left:auto ; 
+    right : 0 ; 
+    transform :none ; 
+}
+
+#typing-box {
+    max-width : 80vw ; 
+    
+}
+
+
+}
 
 
 

@@ -72,20 +72,7 @@ themeBtn.addEventListener('click', () => {
 
 
 
-//undo and redo feature
 
-undobutton.addEventListener('click', () => {
- if (historyIndex > 0) {
-        historyIndex--;
-        restoreCanvas(undoArray[historyIndex]);
-    }
-});
-
-redobutton.addEventListener('click', () => {
-    if (historyIndex < undoArray.length - 1) {   historyIndex++;
-    restoreCanvas(undoArray[historyIndex]);
-    }
-});
 
 
 //closing the menu
@@ -223,13 +210,7 @@ imagebutton.addEventListener('click', () => {
 
 const ctx = canvasground.getContext('2d');
 
-window.addEventListener('load', () => {
-    canvasground.width = canvasground.offsetWidth;
-    canvasground.height = canvasground.offsetHeight; 
 
-
-
-});
 
 let isDrawing = false;
 let selectedTool = "circle";
@@ -465,31 +446,30 @@ textSubTools.forEach(btn => {
     });
 });
 
-const stampRandomImage = (e) => {
+const stampRandomImage = async (e) => { 
+    
     
     const randomImageUrl = `https://picsum.photos/300/300?random=${Math.random()}`;
     console.log("Fetching new random image from: " + randomImageUrl);
     
-    
-    const imgObj = new Image();
-    imgObj.crossOrigin = "anonymous";
-    
-    
-    imgObj.onload = () => {
+    try {
+        const response = await fetch(randomImageUrl); 
+        const blob = await response.blob();
+        const safeUrl = URL.createObjectURL(blob);
+        const imgObj = new Image();
         
-        const size = imgObj.width;
-        ctx.globalCompositeOperation = "source-over";
-        ctx.drawImage(imgObj, e.offsetX - size / 2, e.offsetY - size / 2, size, size);
-
-saveState();
-
-        console.log("Image stamped on canvas!");
-    };
-    
-    
-    imgObj.src = randomImageUrl;
+        imgObj.onload = () => {
+            const size = imgObj.width;
+            ctx.globalCompositeOperation = "source-over";
+            ctx.drawImage(imgObj, e.offsetX - size / 2, e.offsetY - size / 2, size, size);
+            saveState();
+            URL.revokeObjectURL(safeUrl);
+        }; 
+        imgObj.src = safeUrl;
+    } catch (error) {
+        console.error("image failed to load", error);
+    }
 }
-
 
 
 
@@ -672,6 +652,11 @@ if (isPanning) {
 
     }
 
-    canvasground.addEventListener('mousedown', startDraw);
-              canvasground.addEventListener('mousemove', drawing);
-canvasground.addEventListener('mouseup', stopDraw);
+    canvasground.addEventListener('pointerdown', startDraw);
+              canvasground.addEventListener('pointermove', drawing);
+canvasground.addEventListener('pointerup', stopDraw);
+
+canvasground.addEventListener('pointerout', stopDraw);
+
+
+
