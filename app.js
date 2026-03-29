@@ -27,9 +27,11 @@ const brushbutton = document.getElementById('brush');
 const brushmenu = document.querySelector('.brush-popup');
 
 const textbutton = document.getElementById('text');
-const textmenu = document.querySelector('.text-popup');
 
-const allmenus = [shapesmenu, brushmenu, textmenu];
+
+const allmenus = [shapesmenu, brushmenu];
+
+
 
 //for image and eraser tool
 const eraserbutton = document.getElementById('eraser');
@@ -145,20 +147,19 @@ if (!isOpen) {
 
 
 textbutton.addEventListener('click', () => {alltools.forEach(tool => tool.classList.remove('selected-tool'));
+    textbutton.classList.add('selected-tool');
+
 
 
     selectedTool = "text";
     canvasground.style.cursor = "text";
 
 
-    textbutton.classList.add('selected-tool');  
-    const isOpen = textmenu.classList.contains('show-popup');
+    
 
     closeallMenus();
 
-    if (!isOpen) {
-        textmenu.classList.add('show-popup');
-    }
+    
 });
 
 
@@ -433,18 +434,21 @@ saveState();
         }
     });
 }
-const textSubTools = document.querySelectorAll('.text-popup .sub-brush');
+const drawingSubTools = document.querySelectorAll('.brush-popup .sub-brush');
 
-textSubTools.forEach(btn => {
+drawingSubTools.forEach(btn => {
     btn.addEventListener('click', (e) => {
-        
         selectedTool = e.currentTarget.innerText.trim().toLowerCase();
-        
-        console.log("Writing tool changed to: " + selectedTool);
+        console.log("Drawing tool changed to: " + selectedTool);
         canvasground.style.cursor = "crosshair"; 
         closeallMenus();
     });
 });
+
+
+
+
+
 
 const stampRandomImage = async (e) => { 
     
